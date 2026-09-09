@@ -81,4 +81,7 @@ Recommendations:
 - [ ] **v0.2.0:** Custom detector plugin support
 
 ## Acknowledgements
-Developed under the Stellar community initiatives. Supported by a Drips Grant to improve developer tooling in the Stellar and Soroban ecosystem.
+## Acknowledgements & Ecosystem
+
+StellarPath is built as an open-source initiative dedicated to advancing developer tooling and developer experience across the Stellar and Soroban ecosystems. Built to support community contributors and open-source projects
+.
