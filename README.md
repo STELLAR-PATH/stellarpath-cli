@@ -5,19 +5,26 @@
 [![Rust Edition](https://img.shields.io/badge/Rust-2021-orange.svg)](https://www.rust-lang.org)
 [![Soroban SDK Compatibility](https://img.shields.io/badge/Soroban%20SDK-Compatible-success.svg)](https://soroban.stellar.org)
 
-## Core Value Proposition
-StellarPath solves cold-start latency and cognitive overload for new developers exploring Stellar and Soroban monorepos. By deterministically scanning repositories and automatically classifying architectures, StellarPath guides developers exactly where they need to start—eliminating hours of manual repository exploration.
+## Core Purpose
+A deterministic repository intelligence CLI for Stellar and Soroban smart contract workspaces.
+
+## Features
+
+### Empirical Validation & Benchmark
+| Target Architecture | Ecosystem Category | Contracts Detected | Auth Call Sites | Storage Analysis | Scan Latency |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `soroban-examples/auth` | Access Control Reference | 2 (`AuthContract`, `CustomAccount`) | 4 (`require_auth`) | Instance | ~12ms |
+| `soroban-examples/token` | SEP-41 Reference | 1 (`Token`) | 6 (`require_auth_for_args`) | Instance / Persistent | ~14ms |
+| `soroban-examples/liquidity_pool` | Automated Market Maker | 1 (`LiquidityPool`) | 3 (`require_auth`) | Persistent | ~18ms |
 
 ## Architecture & Pipeline
 
 ```mermaid
 graph TD
-    A[Filesystem Scanner<br/>ignore/walkdir] --> B[AST & Manifest Detectors<br/>syn/toml]
-    B --> C[Classification & Ranker Heuristics]
-    C --> D[Renderers]
-    D --> E(Terminal)
-    D --> F(JSON)
-    D --> G(Markdown)
+    A[Workspace Directory] --> B[Rust/TOML Scanner]
+    B --> C[AST/Syn Traversal]
+    C --> D[Structural Metadata Collector]
+    D --> E(Output: Table / JSON / Markdown)
 ```
 
 ## Quick Start
