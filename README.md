@@ -80,8 +80,6 @@ Recommendations:
 - [ ] **v0.2.0:** Developer telemetry integration
 - [ ] **v0.2.0:** Custom detector plugin support
 
-## Acknowledgements
 ## Acknowledgements & Ecosystem
 
-StellarPath is built as an open-source initiative dedicated to advancing developer tooling and developer experience across the Stellar and Soroban ecosystems. Built to support community contributors and open-source projects
-.
+StellarPath is an open-source initiative dedicated to advancing developer tooling, contract architecture inspection, and developer experience across the Stellar and Soroban ecosystems.
