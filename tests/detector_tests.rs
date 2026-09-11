@@ -1,7 +1,7 @@
 use std::path::PathBuf;
-use stellar_path::detector::registry::DetectorRegistry;
-use stellar_path::detector::ScanContext;
-use stellar_path::models::ComponentType;
+use stellarpath::detector::registry::DetectorRegistry;
+use stellarpath::detector::ScanContext;
+use stellarpath::models::ComponentType;
 
 #[test]
 fn test_soroban_detector_matches_fixture() {

@@ -39,11 +39,11 @@ enum Format {
 }
 
 use std::path::PathBuf;
-use stellar_path::report::{
+use stellarpath::report::{
     json::JsonRenderer, markdown::MarkdownRenderer, terminal::TerminalRenderer, ReportRenderer,
 };
-use stellar_path::run_scan;
-use stellar_path::scanner::ScanConfig;
+use stellarpath::run_scan;
+use stellarpath::scanner::ScanConfig;
 
 fn main() {
     let cli = Cli::parse();

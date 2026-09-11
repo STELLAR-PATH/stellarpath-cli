@@ -1,6 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
-use stellar_path::scanner::{ScanConfig, Scanner};
+use stellarpath::scanner::{ScanConfig, Scanner};
 use tempfile::tempdir;
 
 #[test]

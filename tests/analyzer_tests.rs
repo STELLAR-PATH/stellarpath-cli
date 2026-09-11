@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
-use stellar_path::analyzer::Analyzer;
-use stellar_path::models::{ComponentType, Evidence};
+use stellarpath::analyzer::Analyzer;
+use stellarpath::models::{ComponentType, Evidence};
 
 #[test]
 fn test_classify_archetype_soroban_only() {
