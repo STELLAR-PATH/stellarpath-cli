@@ -80,6 +80,21 @@ Recommendations:
 ==================================================
 ```
 
+## Exit Codes & Troubleshooting
+
+StellarPath uses standardized process exit codes for deterministic integration in CI/CD pipelines and developer tooling:
+
+| Exit Code | Status | Description |
+| :---: | :--- | :--- |
+| `0` | **Success** | Repository scan completed and report successfully generated. |
+| `1` | **Analysis / Render Error** | AST parsing failure on malformed Rust files or report formatting/rendering error. |
+| `2` | **Invalid Target Path** | The specified target directory or `Cargo.toml` path does not exist. |
+
+### Troubleshooting
+
+- **Exit Code 1 (AST Parse Error):** Verify that all target `.rs` files contain valid Rust syntax and can be parsed by `syn`.
+- **Exit Code 2 (Path Not Found):** Ensure the target path passed to `stellarpath scan <PATH>` or `stellarpath start <PATH>` is valid and accessible.
+
 ## Project Roadmap
 - [x] **v0.1.0:** Core AST detection and heuristic classification
 - [x] **v0.1.0:** Terminal, JSON, and Markdown rendering
