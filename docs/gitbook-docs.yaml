@@ -1,0 +1,36 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+version: 1
+site:
+  title: stellarpath-cli
+  structure:
+    - type: space
+      key: space-introduction
+      title: Introduction
+      path: introduction
+      default: true
+      content:
+        directory: ./
+    - type: space
+      key: space-getting-started
+      title: Getting Started
+      path: getting-started
+      content:
+        directory: ./getting-started
+    - type: space
+      key: space-cli-reference
+      title: CLI Reference
+      path: cli-reference
+      content:
+        directory: ./cli-reference
+    - type: space
+      key: space-architecture
+      title: Architecture & Detectors
+      path: architecture
+      content:
+        directory: ./architecture
+    - type: space
+      key: space-community
+      title: Ecosystem
+      path: community
+      content:
+        directory: ./community
