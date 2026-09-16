@@ -83,9 +83,9 @@ Recommendations:
 ## Project Roadmap
 - [x] **v0.1.0:** Core AST detection and heuristic classification
 - [x] **v0.1.0:** Terminal, JSON, and Markdown rendering
-- [ ] **v0.2.0:** Authorization flow graph generation
-- [ ] **v0.2.0:** Developer telemetry integration
-- [ ] **v0.2.0:** Custom detector plugin support
+- [x] **v0.2.0:** Authorization flow graph generation
+- [x] **v0.2.0:** Developer telemetry integration
+- [x] **v0.2.0:** Custom detector plugin support
 
 ## Acknowledgements & Ecosystem
 
