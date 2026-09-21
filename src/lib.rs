@@ -3,6 +3,7 @@ pub mod detector;
 pub mod models;
 pub mod report;
 pub mod scanner;
+pub mod lint;
 
 use crate::analyzer::Analyzer;
 use crate::detector::registry::DetectorRegistry;

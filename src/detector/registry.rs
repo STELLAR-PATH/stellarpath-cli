@@ -23,6 +23,7 @@ impl DetectorRegistry {
         let mut registry = Self::new();
         registry.register(SorobanDetector);
         registry.register(StellarSdkDetector);
+        registry.register(crate::detector::sep::SepDetector);
         registry
     }
 

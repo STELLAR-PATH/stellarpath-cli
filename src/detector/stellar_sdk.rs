@@ -54,6 +54,29 @@ impl Detector for StellarSdkDetector {
                         });
                     }
                 }
+            } else if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
+                if matches!(ext, "ts" | "js" | "go" | "py" | "rs") {
+                    if let Ok(content) = fs::read_to_string(&full_path) {
+                        if content.contains("Horizon") || content.contains("horizon.stellar.org") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::StellarSdk,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Found Horizon usage (legacy path)".to_string(),
+                                confidence: 0.8,
+                            });
+                        }
+                        if content.contains("rpc.Server") || content.contains("soroban.rpc") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::StellarSdk,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Found Stellar RPC usage".to_string(),
+                                confidence: 0.8,
+                            });
+                        }
+                    }
+                }
             }
         }
 

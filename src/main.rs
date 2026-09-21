@@ -29,6 +29,12 @@ enum Commands {
         #[arg(default_value = ".")]
         path: String,
     },
+    /// Run security linter on a path
+    Lint {
+        /// The path to lint
+        #[arg(default_value = ".")]
+        path: String,
+    },
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Debug)]
@@ -90,6 +96,24 @@ fn main() {
                 }
                 Err(e) => {
                     eprintln!("Scan failed: {}", e);
+                    std::process::exit(1);
+                }
+            }
+        }
+        Commands::Lint { path } => {
+            match stellarpath::lint::run_lint(&PathBuf::from(path)) {
+                Ok(result) => {
+                    if result.findings.is_empty() {
+                        println!("No security lint issues found.");
+                    } else {
+                        println!("Security Lint Findings:");
+                        for f in result.findings {
+                            println!("- {} [{:?}]: {}", f.path, f.component_type, f.reason);
+                        }
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Lint failed: {}", e);
                     std::process::exit(1);
                 }
             }

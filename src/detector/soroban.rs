@@ -85,6 +85,45 @@ impl Detector for SorobanDetector {
                             .to_string(),
                         confidence,
                     });
+
+                    // Check for patterns
+                    if let Ok(content) = fs::read_to_string(&full_path) {
+                        if content.contains("require_auth") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Structurally sound: Explicit authorization using require_auth".to_string(),
+                                confidence: 0.9,
+                            });
+                        }
+                        if content.contains("enum DataKey") || content.contains("#[contracttype]\npub enum") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Structurally sound: Uses enum for storage keys".to_string(),
+                                confidence: 0.9,
+                            });
+                        } else if content.contains("symbol_short!(") && content.contains(".set(") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Anti-pattern: Uses raw symbols for storage keys instead of typed enum".to_string(),
+                                confidence: 0.8,
+                            });
+                        }
+                        if content.contains("checked_add") || content.contains("checked_sub") || content.contains("checked_mul") {
+                            evidence.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: file.to_string_lossy().to_string(),
+                                detector_name: self.name().to_string(),
+                                reason: "Structurally sound: Uses safe checked arithmetic".to_string(),
+                                confidence: 0.9,
+                            });
+                        }
+                    }
                 }
             }
         }
