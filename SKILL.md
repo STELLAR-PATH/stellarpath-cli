@@ -14,19 +14,24 @@ description: "A fast, Rust-based static analyzer for Stellar and Soroban reposit
 - Provides a dedicated `lint` mode that flags a subset of the 23 documented Soroban common mistakes (e.g., missing events, unsafe unwraps, bare panics).
 
 ## How an AI agent should invoke it
+First, install the CLI:
+```bash
+cargo install --git https://github.com/STELLAR-PATH/stellarpath-cli.git
+```
+
 You can run the tool in three modes:
 
 1. **Scan Mode**: Outputs a summary of what the project is and what components it contains.
    ```bash
-   cargo run -- scan . --format markdown
+   stellarpath scan . --format markdown
    ```
 2. **Start Mode**: Provides concrete starting recommendations for exploring or updating the codebase.
    ```bash
-   cargo run -- start .
+   stellarpath start .
    ```
 3. **Security Lint Mode**: Scans specifically for smart contract vulnerabilities and anti-patterns.
    ```bash
-   cargo run -- lint .
+   stellarpath lint .
    ```
 
 ## What to expect

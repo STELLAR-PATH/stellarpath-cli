@@ -71,3 +71,25 @@ fn test_sep_detector_matches_fixture() {
     assert!(has_sep24, "Should detect SEP-24");
     assert!(has_sep53, "Should detect SEP-53");
 }
+
+#[test]
+fn test_rpc_horizon_detector_matches_fixture() {
+    let root = std::env::current_dir()
+        .unwrap()
+        .join("testdata/rpc-horizon-project");
+    let files = vec![PathBuf::from("src/index.ts")];
+
+    let ctx = ScanContext {
+        root_path: &root,
+        files: &files,
+    };
+
+    let registry = DetectorRegistry::default_registry();
+    let evidence = registry.run_all(&ctx).unwrap();
+
+    let has_horizon = evidence.iter().any(|e| e.reason.contains("Horizon usage"));
+    let has_rpc = evidence.iter().any(|e| e.reason.contains("RPC usage"));
+
+    assert!(has_horizon, "Should detect Horizon usage");
+    assert!(has_rpc, "Should detect RPC usage");
+}
