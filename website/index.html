@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StellarPath CLI - Offline Static Analysis</title>
+  <link rel="icon" href="https://github.com/STELLAR-PATH.png">
+  <style>
+    :root {
+      --bg-color: #0B0E14;
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      
+      --accent-primary: #FFB300;
+      --accent-hover: #FFD700;
+      --accent-pressed: #D78F00;
+      
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 179, 0, 0.2);
+      
+      --code-bg: #1A1F2B;
+      --code-color: #64FFDA;
+    }
+
+    .ambient-light {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 150px, #FFF4D6 0%, #FFB300 20%, #7A2E00 50%, transparent 80%);
+      opacity: 0.15;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 14, 20, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wordmark {
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .wordmark-icon {
+      color: var(--accent-primary);
+      font-size: 1.4rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--accent-hover);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .tagline {
+      color: var(--accent-primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .headline {
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Accessibility Fallbacks for Glass */
+    @media (prefers-reduced-transparency: reduce) {
+      .glass-panel {
+        background: #1A1F2B;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: 1px solid rgba(255, 179, 0, 0.4);
+      }
+      header {
+        background: #0B0E14;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+    }
+
+    @media (prefers-contrast: more) {
+      .glass-panel {
+        border: 2px solid var(--accent-primary);
+      }
+    }
+
+    h2 {
+      color: var(--accent-primary);
+      font-size: 1.75rem;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .detection-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .detect-item {
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .detect-item:last-child {
+      border-bottom: none;
+    }
+
+    .detect-title {
+      font-weight: 600;
+      color: #fff;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .detect-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.05);
+      color: var(--code-color);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .badge-container {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 4rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    footer a {
+      margin: 0 0.5rem;
+    }
+
+    .limitations-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .limitations-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .limitations-list li::before {
+      content: "❌";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      font-size: 0.85rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="ambient-light"></div>
+
+  <header>
+    <div class="wordmark">
+      <img src="https://github.com/STELLAR-PATH.png" alt="StellarPath Logo" class="wordmark-icon" style="width: 24px; height: 24px; border-radius: 50%;"> STELLAR-PATH
+    </div>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#why-this-exists">Why this exists</a>
+      <a href="#detects">What it detects</a>
+      <a href="#usage">Usage</a>
+      <a href="#output">Output</a>
+      <a href="#limitations">Limitations</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero" id="overview">
+      <div class="tagline">A deterministic repository intelligence CLI</div>
+      <h1>Analyze Stellar and Soroban workspaces</h1>
+      <p class="headline">Offline static analysis for SEP implementations, Horizon usage, and common smart contract vulnerabilities.</p>
+      
+      <div class="badge-container">
+        <img src="https://github.com/STELLAR-PATH/stellarpath-cli/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+        <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
+      </div>
+    </div>
+
+    <div class="glass-panel" id="why-this-exists">
+      <h2>Why this exists</h2>
+      <p>When confronting unfamiliar Stellar or Soroban repositories, developers lack a deterministic starting point. StellarPath exists to instantly map project structures, flag outdated SDK usage, and identify common smart contract anti-patterns before you even start coding.</p>
+    </div>
+
+    <div class="glass-panel" id="detects">
+      <h2>What it detects</h2>
+      <div class="detection-grid">
+        <div class="detect-item">
+          <span class="detect-title">Soroban Contract Detection</span>
+          <p class="detect-desc">Triggered by the presence of <code>#[contract]</code> or <code>#[contractimpl]</code> attributes within Rust source files.</p>
+        </div>
+        
+        <div class="detect-item">
+          <span class="detect-title">RPC vs. Horizon Usage</span>
+          <p class="detect-desc">Triggered by analyzing JS/TS/Go/Py/Rs source code for legacy Horizon endpoints (<code>horizon.stellar.org</code>) versus modern RPC initializations (<code>rpc.Server</code>).</p>
+        </div>
+
+        <div class="detect-item">
+          <span class="detect-title">SEP Implementation (SEP-10, SEP-24, SEP-53)</span>
+          <p class="detect-desc">Triggered by specific challenge transaction methods, interactive endpoint URLs, or explicit text references indicating the adoption of Web Auth, Hosted Deposit/Withdrawal, and Sign-In with Stellar.</p>
+        </div>
+
+        <div class="detect-item">
+          <span class="detect-title">Security Linting (3 specific mistakes)</span>
+          <p class="detect-desc">Triggered by static patterns representing bare <code>panic!</code> without typed errors (Mistake #17), unsafe <code>unwrap()</code> or <code>expect()</code> (Mistake #18), and missing event publishing statements (Mistake #19).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-panel" id="usage">
+      <h2>Usage & Integration</h2>
+      
+      <h3>Local Installation</h3>
+      <p>Install directly via Cargo (requires Rust toolchain):</p>
+      <pre>cargo install --path .</pre>
+      
+      <p>Run the analysis on your workspace:</p>
+      <pre>stellarpath scan .
+stellarpath lint .</pre>
+
+      <h3>GitHub Actions Integration</h3>
+      <p>You can use the official GitHub Action in your CI pipeline:</p>
+      <pre>
+steps:
+  - uses: actions/checkout@v4
+  - name: Run StellarPath Analysis
+    uses: STELLAR-PATH/stellarpath-action@v1</pre>
+    </div>
+
+    <div class="glass-panel" id="output">
+      <h2>Real Terminal Output</h2>
+      <p>Here is the exact terminal output from running the CLI's lint mode on a project with security mistakes:</p>
+      <pre>
+$ stellarpath lint .
+Security Lint Findings:
+- testdata/soroban-project/src/lib.rs [SorobanContract]: Mistake #19 (Missing events): No event publishing found in contract
+- testdata/lint-project/src/contract.rs [SorobanContract]: Line 2: Mistake #17 (Bare panic! instead of typed errors)
+- src/lint.rs [SorobanContract]: Line 46: Mistake #18 (Unsafe unwrap() / expect())</pre>
+    </div>
+
+    <div class="glass-panel" id="limitations">
+      <h2>Limitations & Scope</h2>
+      <p>StellarPath aims for deterministic precision over broad assumptions. As such, it intentionally does <strong>not</strong> do the following:</p>
+      <ul class="limitations-list">
+        <li>Detect all 23 Soroban security mistakes (currently only detects 3).</li>
+        <li>Perform deep control-flow or heuristic analysis for logic bugs.</li>
+        <li>Identify SEPs beyond SEP-10, SEP-24, and SEP-53.</li>
+        <li>Execute or fuzz smart contracts (static analysis only).</li>
+        <li>Create or deploy contracts (use <code>stellar-scaffold</code> for generation).</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <div>
+      <a href="https://github.com/STELLAR-PATH/stellarpath-cli">GitHub Repository</a> | 
+      <a href="https://github.com/STELLAR-PATH/stellarpath-cli/issues">Issues</a> | 
+      <a href="https://github.com/STELLAR-PATH/stellarpath-cli/blob/main/LICENSE">MIT License</a>
+    </div>
+    <div style="margin-top: 1rem; opacity: 0.6;">
+      Built for the Stellar & Soroban Ecosystems.
+    </div>
+  </footer>
+
+</body>
+</html>
