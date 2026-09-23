@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StellarPath CLI - Offline Static Analysis</title>
   <link rel="icon" href="https://github.com/STELLAR-PATH.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-color: #0B0E14;
@@ -36,7 +39,7 @@
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
       line-height: 1.6;
@@ -200,6 +203,14 @@
       margin: 0;
     }
 
+code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+      background: var(--code-bg);
+      color: var(--accent-primary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
     pre {
       background: var(--code-bg);
       padding: 1.25rem;
@@ -207,7 +218,7 @@
       overflow-x: auto;
       border: 1px solid rgba(255,255,255,0.05);
       color: var(--code-color);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
       font-size: 0.875rem;
       line-height: 1.5;
       margin: 1rem 0;
@@ -280,7 +291,6 @@
       <p class="headline">Offline static analysis for SEP implementations, Horizon usage, and common smart contract vulnerabilities.</p>
       
       <div class="badge-container">
-        <img src="https://github.com/STELLAR-PATH/stellarpath-cli/actions/workflows/ci.yml/badge.svg" alt="CI Status">
         <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
       </div>
     </div>

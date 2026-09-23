@@ -1,6 +1,5 @@
 # StellarPath CLI
 
-[![CI Status](https://github.com/STELLAR-PATH/stellarpath-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/STELLAR-PATH/stellarpath-cli/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Rust Edition](https://img.shields.io/badge/Rust-2021-orange.svg)](https://www.rust-lang.org)
 
