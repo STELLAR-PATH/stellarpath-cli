@@ -1,6 +1,5 @@
 # StellarPath CLI
 
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Rust Edition](https://img.shields.io/badge/Rust-2021-orange.svg)](https://www.rust-lang.org)
 
 ## Core Purpose

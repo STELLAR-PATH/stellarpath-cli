@@ -265,10 +265,474 @@ code {
       font-size: 0.85rem;
     }
 
-  </style>
+  
+    .bg-code {
+      position: fixed;
+      top: 0;
+      left: -10vw;
+      width: 120vw;
+      height: 200vh;
+      z-index: -2;
+      color: rgba(255, 179, 0, 0.04);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre;
+      overflow: hidden;
+      pointer-events: none;
+      animation: scrollCode 60s linear infinite;
+    }
+    @keyframes scrollCode {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+</style>
 </head>
 <body>
   <div class="ambient-light"></div>
+  <div class="bg-code" aria-hidden="true">
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+use crate::models::{ComponentType, Evidence};
+use std::fs;
+use std::path::Path;
+use walkdir::WalkDir;
+
+pub struct LintResult {
+    pub findings: Vec&lt;Evidence&gt;,
+}
+
+pub fn run_lint(root_path: &Path) -&gt; Result&lt;LintResult, Box&lt;dyn std::error::Error&gt;&gt; {
+    let mut findings = Vec::new();
+    let mut files = Vec::new();
+    
+    for entry in WalkDir::new(root_path) {
+        let entry = entry?;
+        if entry.file_type().is_file() {
+            files.push(entry.path().to_path_buf());
+        }
+    }
+
+    for file in &files {
+        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
+            if let Ok(content) = fs::read_to_string(file) {
+                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                    continue;
+                }
+
+                let lines: Vec&lt;&str&gt; = content.lines().collect();
+                for (i, line) in lines.iter().enumerate() {
+                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: format!("Line {}: Mistake #17", i + 1),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+    Ok(LintResult { findings })
+}
+
+  </div>
 
   <header>
     <div class="wordmark">
@@ -291,7 +755,6 @@ code {
       <p class="headline">Offline static analysis for SEP implementations, Horizon usage, and common smart contract vulnerabilities.</p>
       
       <div class="badge-container">
-        <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
       </div>
     </div>
 
