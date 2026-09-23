@@ -1,6 +1,6 @@
 use crate::models::{ComponentType, Evidence};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 use walkdir::WalkDir;
 
 pub struct LintResult {

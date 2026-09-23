@@ -1,5 +1,4 @@
 use stellarpath::lint::run_lint;
-use std::path::PathBuf;
 
 #[test]
 fn test_security_lint() {
