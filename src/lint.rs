@@ -1,6 +1,6 @@
 use crate::models::{ComponentType, Evidence};
 use std::fs;
-use std::path::{Path};
+use std::path::Path;
 use walkdir::WalkDir;
 
 pub struct LintResult {
@@ -19,52 +19,67 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
     }
 
     for file in &files {
-        if file.extension().and_then(|e| e.to_str()) == Some("rs") {
-            if let Ok(content) = fs::read_to_string(file) {
-                // Check if it's a contract
-                if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
-                    continue;
-                }
+        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
 
-                let lines: Vec<&str> = content.lines().collect();
+        if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
+            if ext == "rs" {
+                if let Ok(content) = fs::read_to_string(file) {
+                    // Check if it's a contract
+                    if !content.contains("#[contract]") && !content.contains("#[contractimpl]") {
+                        continue;
+                    }
 
-                // Mistake #17: Bare panic! instead of typed errors
-                for (i, line) in lines.iter().enumerate() {
-                    if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                    let lines: Vec<&str> = content.lines().collect();
+
+                    // Mistake #17: Bare panic! instead of typed errors
+                    for (i, line) in lines.iter().enumerate() {
+                        if line.contains("panic!(") && !line.contains("panic_with_error!(") {
+                            findings.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: path_str.clone(),
+                                detector_name: "SecurityLint".to_string(),
+                                reason: format!("Line {}: Mistake #17 (Bare panic! instead of typed errors)", i + 1),
+                                confidence: 1.0,
+                            });
+                        }
+                    }
+
+                    // Mistake #18: Unsafe unwrap() / expect()
+                    for (i, line) in lines.iter().enumerate() {
+                        if line.contains(".unwrap()") || line.contains(".expect(") {
+                            findings.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: path_str.clone(),
+                                detector_name: "SecurityLint".to_string(),
+                                reason: format!("Line {}: Mistake #18 (Unsafe unwrap() / expect())", i + 1),
+                                confidence: 1.0,
+                            });
+                        }
+                    }
+
+                    // Mistake #19: Missing events
+                    if !content.contains("env.events().publish") && !content.contains(".publish(") {
                         findings.push(Evidence {
                             component_type: ComponentType::SorobanContract,
-                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
+                            path: path_str.clone(),
                             detector_name: "SecurityLint".to_string(),
-                            reason: format!("Line {}: Mistake #17 (Bare panic! instead of typed errors)", i + 1),
-                            confidence: 1.0,
+                            reason: "Mistake #19 (Missing events): No event publishing found in contract".to_string(),
+                            confidence: 0.7,
                         });
                     }
-                }
 
-                // Mistake #18: Unsafe unwrap() / expect()
-                for (i, line) in lines.iter().enumerate() {
-                    if line.contains(".unwrap()") || line.contains(".expect(") {
-                        findings.push(Evidence {
-                            component_type: ComponentType::SorobanContract,
-                            path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
-                            detector_name: "SecurityLint".to_string(),
-                            reason: format!("Line {}: Mistake #18 (Unsafe unwrap() / expect())", i + 1),
-                            confidence: 1.0,
-                        });
+                    // Storage Key Collisions: Flagging raw `symbol_short!` passed into `.set()`
+                    for (i, line) in lines.iter().enumerate() {
+                        if line.contains(".set(") && line.contains("symbol_short!(") {
+                            findings.push(Evidence {
+                                component_type: ComponentType::SorobanContract,
+                                path: path_str.clone(),
+                                detector_name: "SecurityLint".to_string(),
+                                reason: format!("Line {}: Storage Key Collision (Raw symbol_short! passed into .set())", i + 1),
+                                confidence: 1.0,
+                            });
+                        }
                     }
-                }
-
-                // Mistake #19: Missing events
-                // This is slightly heuristic, but if there are state changing operations and no events, it's a warning.
-                // We'll skip complex heuristics and stick to static facts. If the whole file lacks env.events().publish
-                if !content.contains("env.events().publish") && !content.contains(".publish(") {
-                    findings.push(Evidence {
-                        component_type: ComponentType::SorobanContract,
-                        path: file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string(),
-                        detector_name: "SecurityLint".to_string(),
-                        reason: "Mistake #19 (Missing events): No event publishing found in contract".to_string(),
-                        confidence: 0.7, // A bit of a heuristic for the whole file
-                    });
                 }
             }
         }
