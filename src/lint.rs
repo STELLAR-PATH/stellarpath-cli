@@ -106,6 +106,29 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
         }
     }
 
+        for file in &files {
+        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
+        if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
+            if ext == "rs" || ext == "ts" || ext == "js" {
+                if let Ok(content) = fs::read_to_string(file) {
+                    let lines: Vec<&str> = content.lines().collect();
+                    for (i, line) in lines.iter().enumerate() {
+                        if line.contains("horizon.stellar.org") || line.contains("StellarSdk.Server(") {
+                            findings.push(Evidence {
+                                component_type: ComponentType::StellarSdk,
+                                path: path_str.clone(),
+                                detector_name: "SecurityLint".to_string(),
+                                reason: format!("Line {}: Legacy Horizon RPC detected. Use soroban-rpc instead.", i + 1),
+                                confidence: 1.0,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Ok(LintResult { findings })
 }
 // TTL extension checks: Flagging persistent/instance storage access without corresponding TTL lifecycle extension
+// Horizon RPC Rule
