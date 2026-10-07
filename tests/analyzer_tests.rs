@@ -10,7 +10,7 @@ fn test_classify_archetype_soroban_only() {
         path: "src/lib.rs".to_string(),
         detector_name: "SorobanDetector".to_string(),
         reason: "".to_string(),
-        confidence: 1.0,
+        confidence_bps: 10000,
     }];
     let files = vec![PathBuf::from("src/lib.rs")];
     let model = Analyzer::analyze(
@@ -29,7 +29,7 @@ fn test_classify_archetype_sdk_only() {
         path: "package.json".to_string(),
         detector_name: "StellarSdkDetector".to_string(),
         reason: "".to_string(),
-        confidence: 1.0,
+        confidence_bps: 10000,
     }];
     let files = vec![PathBuf::from("package.json")];
     let model = Analyzer::analyze(
@@ -49,14 +49,14 @@ fn test_classify_archetype_monorepo() {
             path: "contracts/hello/src/lib.rs".to_string(),
             detector_name: "SorobanDetector".to_string(),
             reason: "".to_string(),
-            confidence: 1.0,
+            confidence_bps: 10000,
         },
         Evidence {
             component_type: ComponentType::StellarSdk,
             path: "frontend/package.json".to_string(),
             detector_name: "StellarSdkDetector".to_string(),
             reason: "".to_string(),
-            confidence: 1.0,
+            confidence_bps: 10000,
         },
     ];
     let files = vec![
@@ -82,7 +82,7 @@ fn test_recommendation_ordering() {
         path: "src/lib.rs".to_string(),
         detector_name: "SorobanDetector".to_string(),
         reason: "".to_string(),
-        confidence: 1.0,
+        confidence_bps: 10000,
     }];
     let files = vec![
         PathBuf::from("README.md"),
