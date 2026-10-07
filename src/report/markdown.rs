@@ -32,7 +32,7 @@ impl ReportRenderer for MarkdownRenderer {
                     "| {:?} | `{}` | {:.2} | {} |\n",
                     e.component_type,
                     e.path,
-                    e.confidence_bps / 100,
+                    e.confidence_bps.checked_div(100).unwrap_or(0),
                     e.reason
                 ));
             }

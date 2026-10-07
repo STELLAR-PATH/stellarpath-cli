@@ -44,7 +44,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!(
                                     "Line {}: Mistake #17 (Bare panic! instead of typed errors)",
-                                    i + 1
+                                    i.saturating_add(1)
                                 ),
                                 confidence_bps: 10000,
                             });
@@ -60,7 +60,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!(
                                     "Line {}: Mistake #18 (Unsafe unwrap() / expect())",
-                                    i + 1
+                                    i.saturating_add(1)
                                 ),
                                 confidence_bps: 10000,
                             });
@@ -85,7 +85,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 component_type: ComponentType::SorobanContract,
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
-                                reason: format!("Line {}: Storage Key Collision (Raw symbol_short! passed into .set())", i + 1),
+                                reason: format!("Line {}: Storage Key Collision (Raw symbol_short! passed into .set())", i.saturating_add(1)),
                                 confidence_bps: 10000,
                             });
                         }
@@ -141,7 +141,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 component_type: ComponentType::StellarSdk,
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
-                                reason: format!("Line {}: Legacy Horizon RPC detected. Use soroban-rpc instead.", i + 1),
+                                reason: format!("Line {}: Legacy Horizon RPC detected. Use soroban-rpc instead.", i.saturating_add(1)),
                                 confidence_bps: 10000,
                             });
                         }

@@ -93,3 +93,15 @@ Recommendations:
 ## Acknowledgements & Ecosystem
 
 StellarPath is an open-source initiative dedicated to advancing developer tooling, contract architecture inspection, and developer experience across the Stellar and Soroban ecosystems.
+
+## Maintainers
+| Name | GitHub | Contact |
+|---|---|---|
+| Core Team | [@STELLAR-PATH](https://github.com/STELLAR-PATH) | hello@stellarpath.xyz |
+
+## Contributors
+<a href="https://github.com/STELLAR-PATH/stellarpath-cli/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=STELLAR-PATH/stellarpath-cli" />
+</a>
+
+Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to get started!
