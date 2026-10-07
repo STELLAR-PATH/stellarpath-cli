@@ -16,7 +16,10 @@ impl ReportRenderer for MarkdownRenderer {
             p.archetype.as_deref().unwrap_or("Unknown")
         ));
         output.push_str(&format!("* **Languages:** {}\n", p.languages.join(", ")));
-        output.push_str(&format!("* **Scan Duration:** {}ms\n\n", p.scan_duration_ms));
+        output.push_str(&format!(
+            "* **Scan Duration:** {}ms\n\n",
+            p.scan_duration_ms
+        ));
 
         output.push_str("## Detected Components\n");
         if p.evidence.is_empty() {
@@ -27,7 +30,10 @@ impl ReportRenderer for MarkdownRenderer {
             for e in &p.evidence {
                 output.push_str(&format!(
                     "| {:?} | `{}` | {:.2} | {} |\n",
-                    e.component_type, e.path, e.confidence_bps / 100, e.reason
+                    e.component_type,
+                    e.path,
+                    e.confidence_bps / 100,
+                    e.reason
                 ));
             }
             output.push('\n');

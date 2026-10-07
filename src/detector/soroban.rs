@@ -93,16 +93,21 @@ impl Detector for SorobanDetector {
                                 component_type: ComponentType::SorobanContract,
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
-                                reason: "Structurally sound: Explicit authorization using require_auth".to_string(),
+                                reason:
+                                    "Structurally sound: Explicit authorization using require_auth"
+                                        .to_string(),
                                 confidence_bps: 9000,
                             });
                         }
-                        if content.contains("enum DataKey") || content.contains("#[contracttype]\npub enum") {
+                        if content.contains("enum DataKey")
+                            || content.contains("#[contracttype]\npub enum")
+                        {
                             evidence.push(Evidence {
                                 component_type: ComponentType::SorobanContract,
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
-                                reason: "Structurally sound: Uses enum for storage keys".to_string(),
+                                reason: "Structurally sound: Uses enum for storage keys"
+                                    .to_string(),
                                 confidence_bps: 9000,
                             });
                         } else if content.contains("symbol_short!(") && content.contains(".set(") {
@@ -114,12 +119,16 @@ impl Detector for SorobanDetector {
                                 confidence_bps: 8000,
                             });
                         }
-                        if content.contains("checked_add") || content.contains("checked_sub") || content.contains("checked_mul") {
+                        if content.contains("checked_add")
+                            || content.contains("checked_sub")
+                            || content.contains("checked_mul")
+                        {
                             evidence.push(Evidence {
                                 component_type: ComponentType::SorobanContract,
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
-                                reason: "Structurally sound: Uses safe checked arithmetic".to_string(),
+                                reason: "Structurally sound: Uses safe checked arithmetic"
+                                    .to_string(),
                                 confidence_bps: 9000,
                             });
                         }

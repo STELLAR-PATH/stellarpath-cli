@@ -1,7 +1,7 @@
 pub mod registry;
+pub mod sep;
 pub mod soroban;
 pub mod stellar_sdk;
-pub mod sep;
 
 use crate::models::Evidence;
 use std::path::{Path, PathBuf};

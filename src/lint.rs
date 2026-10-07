@@ -19,7 +19,11 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
     }
 
     for file in &files {
-        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
+        let path_str = file
+            .strip_prefix(root_path)
+            .unwrap_or(file)
+            .to_string_lossy()
+            .to_string();
 
         if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
             if ext == "rs" {
@@ -38,7 +42,10 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 component_type: ComponentType::SorobanContract,
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
-                                reason: format!("Line {}: Mistake #17 (Bare panic! instead of typed errors)", i + 1),
+                                reason: format!(
+                                    "Line {}: Mistake #17 (Bare panic! instead of typed errors)",
+                                    i + 1
+                                ),
                                 confidence_bps: 10000,
                             });
                         }
@@ -51,7 +58,10 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 component_type: ComponentType::SorobanContract,
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
-                                reason: format!("Line {}: Mistake #18 (Unsafe unwrap() / expect())", i + 1),
+                                reason: format!(
+                                    "Line {}: Mistake #18 (Unsafe unwrap() / expect())",
+                                    i + 1
+                                ),
                                 confidence_bps: 10000,
                             });
                         }
@@ -85,19 +95,26 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
         }
     }
 
-        for file in &files {
-        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
+    for file in &files {
+        let path_str = file
+            .strip_prefix(root_path)
+            .unwrap_or(file)
+            .to_string_lossy()
+            .to_string();
         if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
             if ext == "rs" {
                 if let Ok(content) = fs::read_to_string(file) {
-                    let has_storage_access = content.contains(".persistent()") || content.contains(".instance()");
+                    let has_storage_access =
+                        content.contains(".persistent()") || content.contains(".instance()");
                     let has_extend_ttl = content.contains(".extend_ttl(");
                     if has_storage_access && !has_extend_ttl {
                         findings.push(Evidence {
                             component_type: ComponentType::SorobanContract,
                             path: path_str.clone(),
                             detector_name: "SecurityLint".to_string(),
-                            reason: "Missing TTL extension (Storage accessed but extend_ttl not called)".to_string(),
+                            reason:
+                                "Missing TTL extension (Storage accessed but extend_ttl not called)"
+                                    .to_string(),
                             confidence_bps: 10000,
                         });
                     }
@@ -106,14 +123,20 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
         }
     }
 
-        for file in &files {
-        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
+    for file in &files {
+        let path_str = file
+            .strip_prefix(root_path)
+            .unwrap_or(file)
+            .to_string_lossy()
+            .to_string();
         if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
             if ext == "rs" || ext == "ts" || ext == "js" {
                 if let Ok(content) = fs::read_to_string(file) {
                     let lines: Vec<&str> = content.lines().collect();
                     for (i, line) in lines.iter().enumerate() {
-                        if line.contains("horizon.stellar.org") || line.contains("StellarSdk.Server(") {
+                        if line.contains("horizon.stellar.org")
+                            || line.contains("StellarSdk.Server(")
+                        {
                             findings.push(Evidence {
                                 component_type: ComponentType::StellarSdk,
                                 path: path_str.clone(),

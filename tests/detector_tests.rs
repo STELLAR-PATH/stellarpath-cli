@@ -21,7 +21,7 @@ fn test_soroban_detector_matches_fixture() {
     assert_eq!(evidence.len(), 1);
     assert_eq!(evidence[0].component_type, ComponentType::SorobanContract);
     assert_eq!(evidence[0].path, "src/lib.rs");
-    assert_eq!(evidence[0].confidence, 1.0);
+    assert_eq!(evidence[0].confidence_bps, 10000);
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_stellar_sdk_detector_matches_fixture() {
     assert_eq!(evidence.len(), 1);
     assert_eq!(evidence[0].component_type, ComponentType::StellarSdk);
     assert_eq!(evidence[0].path, "package.json");
-    assert_eq!(evidence[0].confidence, 1.0);
+    assert_eq!(evidence[0].confidence_bps, 10000);
 }
 
 #[test]
@@ -61,8 +61,11 @@ fn test_sep_detector_matches_fixture() {
     let evidence = registry.run_all(&ctx).unwrap();
 
     // It should find SEP-10, SEP-24, and SEP-53 evidence
-    assert!(evidence.len() >= 3, "Expected at least 3 pieces of evidence for SEPs");
-    
+    assert!(
+        evidence.len() >= 3,
+        "Expected at least 3 pieces of evidence for SEPs"
+    );
+
     let has_sep10 = evidence.iter().any(|e| e.reason.contains("SEP-10"));
     let has_sep24 = evidence.iter().any(|e| e.reason.contains("SEP-24"));
     let has_sep53 = evidence.iter().any(|e| e.reason.contains("SEP-53"));
