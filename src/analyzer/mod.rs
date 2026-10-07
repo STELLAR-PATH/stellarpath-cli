@@ -38,7 +38,7 @@ impl Analyzer {
             evidence: evidence.to_vec(),
             important_files,
             recommendations,
-            scan_duration: duration.as_secs_f64(),
+            scan_duration_ms: duration.as_millis() as u64,
         }
     }
 

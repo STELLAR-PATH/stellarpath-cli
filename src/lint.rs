@@ -39,7 +39,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!("Line {}: Mistake #17 (Bare panic! instead of typed errors)", i + 1),
-                                confidence: 1.0,
+                                confidence_bps: 10000,
                             });
                         }
                     }
@@ -52,7 +52,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!("Line {}: Mistake #18 (Unsafe unwrap() / expect())", i + 1),
-                                confidence: 1.0,
+                                confidence_bps: 10000,
                             });
                         }
                     }
@@ -64,7 +64,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                             path: path_str.clone(),
                             detector_name: "SecurityLint".to_string(),
                             reason: "Mistake #19 (Missing events): No event publishing found in contract".to_string(),
-                            confidence: 0.7,
+                            confidence_bps: 7000,
                         });
                     }
 
@@ -76,7 +76,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!("Line {}: Storage Key Collision (Raw symbol_short! passed into .set())", i + 1),
-                                confidence: 1.0,
+                                confidence_bps: 10000,
                             });
                         }
                     }
@@ -98,7 +98,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                             path: path_str.clone(),
                             detector_name: "SecurityLint".to_string(),
                             reason: "Missing TTL extension (Storage accessed but extend_ttl not called)".to_string(),
-                            confidence: 1.0,
+                            confidence_bps: 10000,
                         });
                     }
                 }
@@ -119,7 +119,7 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
                                 path: path_str.clone(),
                                 detector_name: "SecurityLint".to_string(),
                                 reason: format!("Line {}: Legacy Horizon RPC detected. Use soroban-rpc instead.", i + 1),
-                                confidence: 1.0,
+                                confidence_bps: 10000,
                             });
                         }
                     }

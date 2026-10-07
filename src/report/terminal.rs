@@ -20,7 +20,7 @@ impl ReportRenderer for TerminalRenderer {
             "Languages: {}\n",
             p.languages.join(", ").magenta()
         ));
-        output.push_str(&format!("Duration: {:.2}s\n\n", p.scan_duration));
+        output.push_str(&format!("Duration: {}ms\n\n", p.scan_duration_ms));
 
         output.push_str(&format!("{}\n", "Detected Components:".bold()));
         if p.evidence.is_empty() {

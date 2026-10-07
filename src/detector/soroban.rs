@@ -76,14 +76,14 @@ impl Detector for SorobanDetector {
             if file.extension().and_then(|e| e.to_str()) == Some("rs") {
                 let full_path = ctx.root_path.join(file);
                 if has_contract_attribute(&full_path) {
-                    let confidence = if has_soroban_dep { 1.0 } else { 0.9 };
+                    let confidence_bps = if has_soroban_dep { 10000 } else { 9000 };
                     evidence.push(Evidence {
                         component_type: ComponentType::SorobanContract,
                         path: file.to_string_lossy().to_string(),
                         detector_name: self.name().to_string(),
                         reason: "Found #[contract] or #[contractimpl] attribute in Rust file"
                             .to_string(),
-                        confidence,
+                        confidence_bps,
                     });
 
                     // Check for patterns
@@ -94,7 +94,7 @@ impl Detector for SorobanDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Structurally sound: Explicit authorization using require_auth".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         }
                         if content.contains("enum DataKey") || content.contains("#[contracttype]\npub enum") {
@@ -103,7 +103,7 @@ impl Detector for SorobanDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Structurally sound: Uses enum for storage keys".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         } else if content.contains("symbol_short!(") && content.contains(".set(") {
                             evidence.push(Evidence {
@@ -111,7 +111,7 @@ impl Detector for SorobanDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Anti-pattern: Uses raw symbols for storage keys instead of typed enum".to_string(),
-                                confidence: 0.8,
+                                confidence_bps: 8000,
                             });
                         }
                         if content.contains("checked_add") || content.contains("checked_sub") || content.contains("checked_mul") {
@@ -120,7 +120,7 @@ impl Detector for SorobanDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Structurally sound: Uses safe checked arithmetic".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         }
                     }

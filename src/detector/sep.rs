@@ -23,7 +23,7 @@ impl Detector for SepDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Implements SEP-10 (Stellar Web Authentication)".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         }
                         if content.contains("/transactions/deposit/interactive") || content.contains("/transactions/withdraw/interactive") || content.contains("SEP-24") || content.contains("SEP24") {
@@ -32,7 +32,7 @@ impl Detector for SepDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Implements SEP-24 (Hosted Deposit and Withdrawal)".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         }
                         if content.contains("SEP-53") || content.contains("SEP53") || content.contains("Sign-In with Stellar") {
@@ -41,7 +41,7 @@ impl Detector for SepDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Implements SEP-53 (Sign-In with Stellar)".to_string(),
-                                confidence: 0.9,
+                                confidence_bps: 9000,
                             });
                         }
                     }

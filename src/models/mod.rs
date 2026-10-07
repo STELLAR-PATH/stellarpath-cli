@@ -27,7 +27,7 @@ mod tests {
                     path: "src/contract.rs".to_string(),
                     detector_name: "contract_detector".to_string(),
                     reason: "found contract".to_string(),
-                    confidence: 1.0,
+                    confidence_bps: 10000,
                 }],
                 important_files: vec!["Cargo.toml".to_string()],
                 recommendations: vec![Recommendation {
@@ -37,14 +37,14 @@ mod tests {
                     reason: "Old version".to_string(),
                     suggested_action: Some("bump version".to_string()),
                 }],
-                scan_duration: 1.5,
+                scan_duration_ms: 1500,
             },
             warnings: vec!["warning1".to_string()],
             errors: vec![],
         };
 
-        let json = serde_json::to_string(&result).unwrap();
-        let deserialized: ScanResult = serde_json::from_str(&json).unwrap();
+        let json = serde_json::to_string(&result).expect("serialization failed");
+        let deserialized: ScanResult = serde_json::from_str(&json).expect("serialization failed");
 
         assert_eq!(result, deserialized);
     }

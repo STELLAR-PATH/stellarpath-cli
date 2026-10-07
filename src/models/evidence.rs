@@ -7,5 +7,5 @@ pub struct Evidence {
     pub path: String,
     pub detector_name: String,
     pub reason: String,
-    pub confidence: f32,
+    pub confidence_bps: u32,
 }

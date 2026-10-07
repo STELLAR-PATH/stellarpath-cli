@@ -26,7 +26,7 @@ impl Detector for StellarSdkDetector {
                             path: file.to_string_lossy().to_string(),
                             detector_name: self.name().to_string(),
                             reason: "Found Stellar SDK in package.json".to_string(),
-                            confidence: 1.0,
+                            confidence_bps: 10000,
                         });
                     }
                 }
@@ -38,7 +38,7 @@ impl Detector for StellarSdkDetector {
                             path: file.to_string_lossy().to_string(),
                             detector_name: self.name().to_string(),
                             reason: "Found Stellar SDK in go.mod".to_string(),
-                            confidence: 1.0,
+                            confidence_bps: 10000,
                         });
                     }
                 }
@@ -50,7 +50,7 @@ impl Detector for StellarSdkDetector {
                             path: file.to_string_lossy().to_string(),
                             detector_name: self.name().to_string(),
                             reason: "Found Stellar SDK in requirements.txt".to_string(),
-                            confidence: 1.0,
+                            confidence_bps: 10000,
                         });
                     }
                 }
@@ -63,7 +63,7 @@ impl Detector for StellarSdkDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Found Horizon usage (legacy path)".to_string(),
-                                confidence: 0.8,
+                                confidence_bps: 8000,
                             });
                         }
                         if content.contains("rpc.Server") || content.contains("soroban.rpc") {
@@ -72,7 +72,7 @@ impl Detector for StellarSdkDetector {
                                 path: file.to_string_lossy().to_string(),
                                 detector_name: self.name().to_string(),
                                 reason: "Found Stellar RPC usage".to_string(),
-                                confidence: 0.8,
+                                confidence_bps: 8000,
                             });
                         }
                     }
