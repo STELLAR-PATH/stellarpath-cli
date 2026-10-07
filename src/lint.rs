@@ -85,5 +85,27 @@ pub fn run_lint(root_path: &Path) -> Result<LintResult, Box<dyn std::error::Erro
         }
     }
 
+        for file in &files {
+        let path_str = file.strip_prefix(root_path).unwrap_or(file).to_string_lossy().to_string();
+        if let Some(ext) = file.extension().and_then(|e| e.to_str()) {
+            if ext == "rs" {
+                if let Ok(content) = fs::read_to_string(file) {
+                    let has_storage_access = content.contains(".persistent()") || content.contains(".instance()");
+                    let has_extend_ttl = content.contains(".extend_ttl(");
+                    if has_storage_access && !has_extend_ttl {
+                        findings.push(Evidence {
+                            component_type: ComponentType::SorobanContract,
+                            path: path_str.clone(),
+                            detector_name: "SecurityLint".to_string(),
+                            reason: "Missing TTL extension (Storage accessed but extend_ttl not called)".to_string(),
+                            confidence: 1.0,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     Ok(LintResult { findings })
 }
+// TTL extension checks: Flagging persistent/instance storage access without corresponding TTL lifecycle extension
