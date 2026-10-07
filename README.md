@@ -56,10 +56,13 @@ stellarpath lint .
 ```
 
 ### Supported Security Rules
-We currently cover 3 of the 23 documented Soroban security mistakes:
+We currently cover the following documented Soroban security mistakes and best practices:
 - [x] **Mistake #17**: Bare panic! instead of typed errors
 - [x] **Mistake #18**: Unsafe unwrap() / expect()
 - [x] **Mistake #19**: Missing events
+- [x] **Storage Key Collisions**: Flagging raw `symbol_short!` passed into `.set()` instead of typed `DataKey` enums
+- [x] **TTL Extension Checks**: Flagging persistent/instance storage access without corresponding TTL lifecycle extension
+- [x] **Horizon vs. Soroban RPC**: Flagging legacy Horizon endpoint calls in favor of `soroban-rpc`
 - [ ] **Mistake #1 - #16, #20 - #23**: Currently unimplemented (requires deeper heuristic or control-flow analysis).
 
 ### Example Output
