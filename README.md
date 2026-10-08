@@ -28,16 +28,16 @@ The core loop operates exclusively on parsed AST nodes rather than raw strings:
 2. **Visitor Implementation**: Custom `syn::visit::Visit` trait implementations traverse `ItemFn`, `ItemEnum`, and `Macro` nodes.
 3. **Deterministic Evaluation**: Each visitor applies exact structural pattern matching. If an `env.storage().instance().set(...)` call doesn't enforce a typed `enum` key, it deterministically flags the line.
 
-```text
-       +-------------------------------------------------------------+
-       |                  stellarpath-cli (Rust Engine)              |
-       |  * Abstract Syntax Tree (AST) Traversal (`syn`)             |
-       |  * Typed DataKey collision prevention                       |
-       |  * Instance / Persistent Storage TTL lifecycle checks       |
-       |  * Modern RPC vs Horizon endpoint detection                 |
-       |  * Security Mistakes (#17 panic, #18 unwrap, #19 events)    |
-       +-------------------------------------------------------------+
-```
+
+- `⠀⠀⠀⠀⠀⠀⠀+-------------------------------------------------------------+`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀stellarpath-cli⠀(Rust⠀Engine)⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Abstract⠀Syntax⠀Tree⠀(AST)⠀Traversal⠀('syn')⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Typed⠀DataKey⠀collision⠀prevention⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Instance⠀/⠀Persistent⠀Storage⠀TTL⠀lifecycle⠀checks⠀⠀⠀⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Modern⠀RPC⠀vs⠀Horizon⠀endpoint⠀detection⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Security⠀Mistakes⠀(#17⠀panic,⠀#18⠀unwrap,⠀#19⠀events)⠀⠀⠀⠀|`
+- `⠀⠀⠀⠀⠀⠀⠀+-------------------------------------------------------------+`
+
 
 ---
 
@@ -45,23 +45,23 @@ The core loop operates exclusively on parsed AST nodes rather than raw strings:
 
 ### Method A: Cargo (Recommended)
 Compile the engine natively using the stable Rust toolchain.
-```bash
-cargo install --git https://github.com/STELLAR-PATH/stellarpath-cli.git
-```
+
+- `cargo⠀install⠀--git⠀https://github.com/STELLAR-PATH/stellarpath-cli.git`
+
 
 ### Method B: Source Build
-```bash
-git clone https://github.com/STELLAR-PATH/stellarpath-cli.git
-cd stellarpath-cli
-cargo build --release
-sudo cp target/release/stellarpath /usr/local/bin/
-```
+
+- `git⠀clone⠀https://github.com/STELLAR-PATH/stellarpath-cli.git`
+- `cd⠀stellarpath-cli`
+- `cargo⠀build⠀--release`
+- `sudo⠀cp⠀target/release/stellarpath⠀/usr/local/bin/`
+
 
 ### Method C: Docker Image
-```bash
-docker pull ghcr.io/stellar-path/stellarpath-cli:latest
-docker run -v $(pwd):/workspace ghcr.io/stellar-path/stellarpath-cli scan /workspace
-```
+
+- `docker⠀pull⠀ghcr.io/stellar-path/stellarpath-cli:latest`
+- `docker⠀run⠀-v⠀$(pwd):/workspace⠀ghcr.io/stellar-path/stellarpath-cli⠀scan⠀/workspace`
+
 
 ---
 
@@ -76,16 +76,16 @@ docker run -v $(pwd):/workspace ghcr.io/stellar-path/stellarpath-cli scan /works
 
 ### Configuration: `stellarpath.toml`
 Place a `stellarpath.toml` in your repository root to configure the engine:
-```toml
-[core]
-strict_mode = true          # Fails CI on ANY warning
-exclude_dirs = ["tests/", "benches/"]
 
-[rules]
-e0001_raw_datakey = "deny"
-e0002_missing_ttl = "warn"
-e0003_unwrap_used = "allow"
-```
+- `[core]`
+- `strict_mode⠀=⠀true⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀#⠀Fails⠀CI⠀on⠀ANY⠀warning`
+- `exclude_dirs⠀=⠀["tests/",⠀"benches/"]`
+- `⠀`
+- `[rules]`
+- `e0001_raw_datakey⠀=⠀"deny"`
+- `e0002_missing_ttl⠀=⠀"warn"`
+- `e0003_unwrap_used⠀=⠀"allow"`
+
 
 ---
 
@@ -97,30 +97,30 @@ e0003_unwrap_used = "allow"
 Using raw `Symbol::short("admin")` directly in storage operations can lead to unintended collisions in complex contracts.
 
 **Vulnerable Code:**
-```rust
-env.storage().instance().set(&Symbol::short("admin"), &admin_address);
-```
+
+- `env.storage().instance().set(&Symbol::short("admin"),⠀&admin_address);`
+
 
 **Remediated Code:**
-```rust
-#[contracttype]
-#[derive(Clone)]
-pub enum DataKey {
-    Admin,
-    Allowance(Address),
-}
 
-env.storage().instance().set(&DataKey::Admin, &admin_address);
-```
+- `#[contracttype]`
+- `#[derive(Clone)]`
+- `pub⠀enum⠀DataKey⠀{`
+- `⠀⠀⠀⠀Admin,`
+- `⠀⠀⠀⠀Allowance(Address),`
+- `}`
+- `⠀`
+- `env.storage().instance().set(&DataKey::Admin,⠀&admin_address);`
+
 
 ### `E0002`: Missing Storage TTL Extension
 Soroban state requires TTL extensions. Writing state without subsequently extending its TTL is flagged as a high-severity risk.
 
 **Vulnerable Code:**
-```rust
-env.storage().persistent().set(&DataKey::Balance, &amount);
-// Missing extend_ttl call
-```
+
+- `env.storage().persistent().set(&DataKey::Balance,⠀&amount);`
+- `//⠀Missing⠀extend_ttl⠀call`
+
 
 ### `E0003`: Insecure RPC/Horizon Overlap
 Flagging legacy Horizon endpoints when modern Soroban RPC endpoints should be used for data indexing.
