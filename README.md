@@ -1,107 +1,67 @@
-# StellarPath CLI
+<div align="center">
 
-[![Rust Edition](https://img.shields.io/badge/Rust-2021-orange.svg)](https://www.rust-lang.org)
+# `stellarpath-cli`
 
-## Core Purpose
-A deterministic repository intelligence CLI for Stellar and Soroban smart contract workspaces.
+**Deterministic Static Analysis & Security Linting Engine for Soroban Contracts**
 
-## Features
+[![Stellar Ecosystem](https://img.shields.io/badge/Stellar-Soroban-7B3FE4?style=for-the-badge&logo=stellar)](https://stellar.org)
+[![Rust 2021](https://img.shields.io/badge/Rust-2021-DEA584?style=for-the-badge&logo=rust)](https://www.rust-lang.org)
+[![Drips Stellar Wave](https://img.shields.io/badge/Drips-Stellar%20Wave%20Participant-00D395?style=for-the-badge)](https://drips.network)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 
-- **Stellar SDK Detection**: Distinguishes between modern Stellar RPC usage and legacy Horizon endpoints by analyzing source files.
-- **Soroban Contract Analysis**: Uses static analysis to identify structurally sound patterns (e.g., explicit `require_auth`, typed `enum` storage keys, safe math) and flag anti-patterns (e.g., raw symbol storage key collisions).
-- **SEP Implementation Detection**: Identifies whether the codebase implements key Stellar Ecosystem Proposals, currently supporting SEP-10 (Web Auth), SEP-24 (Hosted Deposit/Withdraw), and SEP-53 (Sign-In with Stellar).
-- **Security Linting**: A dedicated `lint` mode that checks smart contracts for a subset of the 23 documented Soroban security mistakes (detects bare panics, unsafe unwraps, and missing events).
+</div>
 
-## Architecture & Pipeline
+## 📖 Overview
 
-```mermaid
-graph TD
-    A[Workspace Directory] --> B[Rust/TOML/Source Scanner]
-    B --> C[AST/Pattern Matching Traversal]
-    C --> D[Structural Metadata Collector]
-    C --> F[Security Linter]
-    D --> E(Output: Table / JSON / Markdown)
-```
+`stellarpath-cli` is a high-performance Abstract Syntax Tree (AST) static analyzer built in Rust. It statically inspects Soroban smart contracts for security anti-patterns, storage collisions, and RPC hygiene without requiring a runtime WASM execution environment.
 
-## Quick Start
+This tool acts as the core engine in the STELLAR-PATH ecosystem, providing deterministic security verification for Soroban developers.
 
-### Installation
+## ✨ Key Features
+
+- **Typed DataKey Collision Prevention**: Detects raw symbol usage that could lead to storage overlaps.
+- **TTL Lifecycle Checks**: Ensures instance and persistent storage TTLs are correctly initialized and extended.
+- **RPC Modernization**: Flags deprecated Horizon API usage in favor of modern Soroban RPCs.
+- **Security Anti-Patterns**: Automatically detects common Soroban security mistakes (e.g., #17 panics, #18 unwrap abuses, #19 missing events).
+- **Deterministic Traversal**: Powered by the Rust `syn` crate for fast, accurate AST traversal.
+
+## 🚀 Installation
 
 ```bash
-# Install directly from the repository
-cargo install --path .
+# Clone the repository
+git clone https://github.com/STELLAR-PATH/stellarpath-cli.git
+cd stellarpath-cli
 
-# Or build the release binary manually
+# Build the release binary
 cargo build --release
+
+# (Optional) Move to your PATH
+mv target/release/stellarpath ~/.local/bin/
 ```
 
-### Usage
+## 🛠️ Usage
 
-Run StellarPath in the root of any Stellar or Soroban repository. The CLI provides three core modes:
+Run the static inspector against your Soroban contract source files:
 
-1. **Scan**: Analyze what the project is and what components it contains.
 ```bash
-stellarpath scan .
-```
-*(Format output using `--format json` or `--format markdown`)*
-
-2. **Start**: Get concrete starting recommendations for exploring the codebase.
-```bash
-stellarpath start .
+stellarpath scan ./contracts --format terminal
 ```
 
-3. **Lint**: Run static security checks for common smart contract mistakes.
-```bash
-stellarpath lint .
-```
+Output formats supported: `terminal`, `json`, `sarif`.
 
-### Supported Security Rules
-We currently cover the following documented Soroban security mistakes and best practices:
-- [x] **Mistake #17**: Bare panic! instead of typed errors
-- [x] **Mistake #18**: Unsafe unwrap() / expect()
-- [x] **Mistake #19**: Missing events
-- [x] **Storage Key Collisions**: Flagging raw `symbol_short!` passed into `.set()` instead of typed `DataKey` enums
-- [x] **TTL Extension Checks**: Flagging persistent/instance storage access without corresponding TTL lifecycle extension
-- [x] **Horizon vs. Soroban RPC**: Flagging legacy Horizon endpoint calls in favor of `soroban-rpc`
-- [ ] **Mistake #1 - #16, #20 - #23**: Currently unimplemented (requires deeper heuristic or control-flow analysis).
+## 🤝 Contributing & Reviewers
 
-### Example Output
+We welcome community contributions! This project is critical for the Drips Stellar Wave ecosystem.
 
-```
-$ stellarpath
-==================================================
-StellarPath Analysis Report
-==================================================
+**For Contributors:**
+- The engine uses the `syn` crate. To add a new lint rule, implement the `Visitor` trait in the `src/lints/` directory.
+- Please ensure `cargo fmt` and `cargo clippy` pass cleanly.
+- Write unit tests for all new AST matchers in `tests/`.
 
-Project Archetype: Full-Stack Stellar / Soroban Monorepo
+**For Reviewers:**
+- All AST evaluations are deterministic. When reviewing PRs, verify that the edge-case unit tests are exhaustive for the Soroban contract syntax being targeted.
 
-Languages Detected:
-- Rust
-- TypeScript/JavaScript
-
-Recommendations:
-1. Review Documentation: Start by reading the project documentation to understand its structure. (Read this file) -> README.md
-2. Explore Smart Contracts: Soroban smart contracts are a core part of this project. (Review contract implementation) -> src/contract.rs
-3. Run Tests: A Rust project was detected. (cargo test) -> Cargo.toml
-==================================================
-```
-
-## Project Roadmap
-- [x] **v0.1.0:** Core AST detection and heuristic classification
-- [x] **v0.1.0:** Terminal, JSON, and Markdown rendering
-
-## Acknowledgements & Ecosystem
-
-StellarPath is an open-source initiative dedicated to advancing developer tooling, contract architecture inspection, and developer experience across the Stellar and Soroban ecosystems.
-
-## Maintainers
-| Name | GitHub | Contact |
-|---|---|---|
-| Core Team | [@STELLAR-PATH](https://github.com/STELLAR-PATH) | hello@stellarpath.xyz |
-
-## Contributors
-<a href="https://github.com/STELLAR-PATH/stellarpath-cli/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=STELLAR-PATH/stellarpath-cli" />
-</a>
-
-Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to get started!
+---
+<div align="center">
+  <sub>Part of the <a href="https://github.com/STELLAR-PATH">STELLAR-PATH</a> Toolchain. Built for the Soroban ecosystem.</sub>
+</div>
