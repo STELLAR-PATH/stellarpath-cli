@@ -1,8 +1,16 @@
 <div align="center">
 
-# `stellarpath-cli`
+```text
+███████╗████████╗███████╗██╗     ██╗      █████╗ ██████╗       ██████╗  █████╗ ████████╗██╗  ██╗
+██╔════╝╚══██╔══╝██╔════╝██║     ██║     ██╔══██╗██╔══██╗      ██╔══██╗██╔══██╗╚══██╔══╝██║  ██║
+███████╗   ██║   █████╗  ██║     ██║     ███████║██████╔╝█████╗██████╔╝███████║   ██║   ███████║
+╚════██║   ██║   ██╔══╝  ██║     ██║     ██╔══██║██╔══██╗╚════╝██╔═══╝ ██╔══██║   ██║   ██╔══██║
+███████║   ██║   ███████╗███████╗███████╗██║  ██║██║  ██║      ██║     ██║  ██║   ██║   ██║  ██║
+╚══════╝   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝      ╚═╝     ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+```
 
-**Deterministic Static Analysis & Security Linting Engine for Soroban Contracts**
+# **stellarpath-cli**
+### Deterministic AST Static Analysis Engine for Soroban
 
 [![Stellar Ecosystem](https://img.shields.io/badge/Stellar-Soroban-7B3FE4?style=for-the-badge&logo=stellar)](https://stellar.org)
 [![Rust 2021](https://img.shields.io/badge/Rust-2021-DEA584?style=for-the-badge&logo=rust)](https://www.rust-lang.org)
@@ -11,57 +19,132 @@
 
 </div>
 
-## 📖 Overview
+---
 
-`stellarpath-cli` is a high-performance Abstract Syntax Tree (AST) static analyzer built in Rust. It statically inspects Soroban smart contracts for security anti-patterns, storage collisions, and RPC hygiene without requiring a runtime WASM execution environment.
+## 📖 1. Executive Summary
 
-This tool acts as the core engine in the STELLAR-PATH ecosystem, providing deterministic security verification for Soroban developers.
+`stellarpath-cli` is an industrial-grade, zero-runtime Abstract Syntax Tree (AST) static analysis tool explicitly designed for the Soroban smart contract ecosystem. Unlike traditional linters that rely on regex or dynamic execution trace analysis, this engine strictly leverages the Rust `syn` crate to deterministically traverse contract source code.
 
-## ✨ Key Features
+Inspired by standards set by **StellarCanary** and **SoroTrail**, `stellarpath-cli` targets common Soroban security anti-patterns (such as raw DataKey symbol collisions, lifecycle TTL mismanagement, and insecure RPC endpoint usage) to prevent vulnerabilities prior to WASM compilation.
 
-- **Typed DataKey Collision Prevention**: Detects raw symbol usage that could lead to storage overlaps.
-- **TTL Lifecycle Checks**: Ensures instance and persistent storage TTLs are correctly initialized and extended.
-- **RPC Modernization**: Flags deprecated Horizon API usage in favor of modern Soroban RPCs.
-- **Security Anti-Patterns**: Automatically detects common Soroban security mistakes (e.g., #17 panics, #18 unwrap abuses, #19 missing events).
-- **Deterministic Traversal**: Powered by the Rust `syn` crate for fast, accurate AST traversal.
+---
 
-## 🚀 Installation
+## 🏗️ 2. Core Architecture & Determinism
 
+### The `syn` Traversal Pipeline
+The core loop operates exclusively on parsed AST nodes rather than raw strings:
+1. **Tokenization**: Source files are parsed via `proc_macro2` and `syn`.
+2. **Visitor Implementation**: Custom `syn::visit::Visit` trait implementations traverse `ItemFn`, `ItemEnum`, and `Macro` nodes.
+3. **Deterministic Evaluation**: Each visitor applies exact structural pattern matching. If an `env.storage().instance().set(...)` call doesn't enforce a typed `enum` key, it deterministically flags the line.
+
+```text
+       +-------------------------------------------------------------+
+       |                  stellarpath-cli (Rust Engine)              |
+       |  * Abstract Syntax Tree (AST) Traversal (`syn`)             |
+       |  * Typed DataKey collision prevention                       |
+       |  * Instance / Persistent Storage TTL lifecycle checks       |
+       |  * Modern RPC vs Horizon endpoint detection                 |
+       |  * Security Mistakes (#17 panic, #18 unwrap, #19 events)    |
+       +-------------------------------------------------------------+
+```
+
+---
+
+## 🚀 3. Installation Specifications
+
+### Method A: Cargo (Recommended)
+Compile the engine natively using the stable Rust toolchain.
 ```bash
-# Clone the repository
+cargo install --git https://github.com/STELLAR-PATH/stellarpath-cli.git
+```
+
+### Method B: Source Build
+```bash
 git clone https://github.com/STELLAR-PATH/stellarpath-cli.git
 cd stellarpath-cli
-
-# Build the release binary
 cargo build --release
-
-# (Optional) Move to your PATH
-mv target/release/stellarpath ~/.local/bin/
+sudo cp target/release/stellarpath /usr/local/bin/
 ```
 
-## 🛠️ Usage
-
-Run the static inspector against your Soroban contract source files:
-
+### Method C: Docker Image
 ```bash
-stellarpath scan ./contracts --format terminal
+docker pull ghcr.io/stellar-path/stellarpath-cli:latest
+docker run -v $(pwd):/workspace ghcr.io/stellar-path/stellarpath-cli scan /workspace
 ```
 
-Output formats supported: `terminal`, `json`, `sarif`.
+---
 
-## 🤝 Contributing & Reviewers
+## ⌨️ 4. CLI Command Matrix
 
-We welcome community contributions! This project is critical for the Drips Stellar Wave ecosystem.
+| Command | Flags / Arguments | Description | Output Format |
+| :--- | :--- | :--- | :--- |
+| `scan` | `<DIR> --format [term,json,sarif]` | Executes the primary AST analysis traversal over all `.rs` files in the target directory. | Terminal, JSON, SARIF |
+| `tree` | `<DIR> --depth <N>` | Outputs a structural map of the repository, identifying contract entrypoints and dependencies. | ASCII Tree |
+| `doctor` | `--fix` | Analyzes `Cargo.toml` and `.cargo/config.toml` to verify Soroban SDK pinning and optimization flags. | Terminal |
+| `explain`| `[ERROR_CODE]` | Provides long-form, detailed explanations of specific security anti-patterns and remediation steps. | Markdown |
 
-**For Contributors:**
-- The engine uses the `syn` crate. To add a new lint rule, implement the `Visitor` trait in the `src/lints/` directory.
-- Please ensure `cargo fmt` and `cargo clippy` pass cleanly.
-- Write unit tests for all new AST matchers in `tests/`.
+### Configuration: `stellarpath.toml`
+Place a `stellarpath.toml` in your repository root to configure the engine:
+```toml
+[core]
+strict_mode = true          # Fails CI on ANY warning
+exclude_dirs = ["tests/", "benches/"]
 
-**For Reviewers:**
-- All AST evaluations are deterministic. When reviewing PRs, verify that the edge-case unit tests are exhaustive for the Soroban contract syntax being targeted.
+[rules]
+e0001_raw_datakey = "deny"
+e0002_missing_ttl = "warn"
+e0003_unwrap_used = "allow"
+```
+
+---
+
+## 🛡️ 5. Error Codes & Security Diagnostics
+
+`stellarpath-cli` assigns unique diagnostic codes to every detected anti-pattern.
+
+### `E0001`: Raw Symbol DataKey Collision
+Using raw `Symbol::short("admin")` directly in storage operations can lead to unintended collisions in complex contracts.
+
+**❌ Vulnerable Code:**
+```rust
+env.storage().instance().set(&Symbol::short("admin"), &admin_address);
+```
+
+**✅ Remediated Code:**
+```rust
+#[contracttype]
+#[derive(Clone)]
+pub enum DataKey {
+    Admin,
+    Allowance(Address),
+}
+
+env.storage().instance().set(&DataKey::Admin, &admin_address);
+```
+
+### `E0002`: Missing Storage TTL Extension
+Soroban state requires TTL extensions. Writing state without subsequently extending its TTL is flagged as a high-severity risk.
+
+**❌ Vulnerable Code:**
+```rust
+env.storage().persistent().set(&DataKey::Balance, &amount);
+// Missing extend_ttl call
+```
+
+### `E0003`: Insecure RPC/Horizon Overlap
+Flagging legacy Horizon endpoints when modern Soroban RPC endpoints should be used for data indexing.
+
+---
+
+## 🤝 6. Contributing Guidelines
+
+We enforce a strict development standard for `stellarpath-cli`.
+
+1. **New Lint Rules**: Must implement `syn::visit::Visit`. Create a new module in `src/lints/` and register it in the master visitor registry.
+2. **Unit Testing**: You must provide exhaustive positive and negative test cases utilizing raw string parsing: `syn::parse_str::<syn::File>(&code)`.
+3. **Format & Clippy**: `cargo fmt --all -- --check` and `cargo clippy --all-targets -- -D warnings` must pass.
 
 ---
 <div align="center">
-  <sub>Part of the <a href="https://github.com/STELLAR-PATH">STELLAR-PATH</a> Toolchain. Built for the Soroban ecosystem.</sub>
+  <sub>Part of the <b>STELLAR-PATH</b> Toolchain. Built for the Soroban ecosystem.</sub>
 </div>
