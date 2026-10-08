@@ -28,14 +28,16 @@ The core loop operates exclusively on parsed AST nodes rather than raw strings:
 3. **Deterministic Evaluation**: Each visitor applies exact structural pattern matching. If an `env.storage().instance().set(...)` call doesn't enforce a typed `enum` key, it deterministically flags the line.
 
 
-- `⠀⠀⠀⠀⠀⠀⠀+-------------------------------------------------------------+`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀stellarpath-cli⠀(Rust⠀Engine)⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Abstract⠀Syntax⠀Tree⠀(AST)⠀Traversal⠀('syn')⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Typed⠀DataKey⠀collision⠀prevention⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Instance⠀/⠀Persistent⠀Storage⠀TTL⠀lifecycle⠀checks⠀⠀⠀⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Modern⠀RPC⠀vs⠀Horizon⠀endpoint⠀detection⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀|⠀⠀*⠀Security⠀Mistakes⠀(#17⠀panic,⠀#18⠀unwrap,⠀#19⠀events)⠀⠀⠀⠀|`
-- `⠀⠀⠀⠀⠀⠀⠀+-------------------------------------------------------------+`
+```text
+       +-------------------------------------------------------------+
+       |                  stellarpath-cli (Rust Engine)              |
+       |  * Abstract Syntax Tree (AST) Traversal (`syn`)             |
+       |  * Typed DataKey collision prevention                       |
+       |  * Instance / Persistent Storage TTL lifecycle checks       |
+       |  * Modern RPC vs Horizon endpoint detection                 |
+       |  * Security Mistakes (#17 panic, #18 unwrap, #19 events)    |
+       +-------------------------------------------------------------+
+```
 
 
 ---
