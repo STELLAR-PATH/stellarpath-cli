@@ -1,6 +1,8 @@
 ---
 name: stellarpath-cli
 description: "A fast, Rust-based static analyzer for Stellar and Soroban repositories."
+user-invocable: true
+argument-hint: "[repository path]"
 ---
 
 # stellarpath-cli
