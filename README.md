@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1>⚡ <code>stellarpath-cli</code> ⚡</h1>
+<h1><code>stellarpath-cli</code></h1>
 <h3>Deterministic AST Static Analysis Engine for Soroban</h3>
 
 [![Stellar Ecosystem](https://img.shields.io/badge/Stellar-Soroban-7B3FE4?style=for-the-badge&logo=stellar)](https://stellar.org)
@@ -12,7 +12,7 @@
 
 ---
 
-## 📖 1. Executive Summary
+## 1. Executive Summary
 
 `stellarpath-cli` is an industrial-grade, zero-runtime Abstract Syntax Tree (AST) static analysis tool explicitly designed for the Soroban smart contract ecosystem. Unlike traditional linters that rely on regex or dynamic execution trace analysis, this engine strictly leverages the Rust `syn` crate to deterministically traverse contract source code.
 
@@ -20,7 +20,7 @@ Inspired by standards set by **StellarCanary** and **SoroTrail**, `stellarpath-c
 
 ---
 
-## 🏗️ 2. Core Architecture & Determinism
+## 2. Core Architecture & Determinism
 
 ### The `syn` Traversal Pipeline
 The core loop operates exclusively on parsed AST nodes rather than raw strings:
@@ -41,7 +41,7 @@ The core loop operates exclusively on parsed AST nodes rather than raw strings:
 
 ---
 
-## 🚀 3. Installation Specifications
+## 3. Installation Specifications
 
 ### Method A: Cargo (Recommended)
 Compile the engine natively using the stable Rust toolchain.
@@ -65,7 +65,7 @@ docker run -v $(pwd):/workspace ghcr.io/stellar-path/stellarpath-cli scan /works
 
 ---
 
-## ⌨️ 4. CLI Command Matrix
+## 4. CLI Command Matrix
 
 | Command | Flags / Arguments | Description | Output Format |
 | :--- | :--- | :--- | :--- |
@@ -89,19 +89,19 @@ e0003_unwrap_used = "allow"
 
 ---
 
-## 🛡️ 5. Error Codes & Security Diagnostics
+## 5. Error Codes & Security Diagnostics
 
 `stellarpath-cli` assigns unique diagnostic codes to every detected anti-pattern.
 
 ### `E0001`: Raw Symbol DataKey Collision
 Using raw `Symbol::short("admin")` directly in storage operations can lead to unintended collisions in complex contracts.
 
-**❌ Vulnerable Code:**
+**Vulnerable Code:**
 ```rust
 env.storage().instance().set(&Symbol::short("admin"), &admin_address);
 ```
 
-**✅ Remediated Code:**
+**Remediated Code:**
 ```rust
 #[contracttype]
 #[derive(Clone)]
@@ -116,7 +116,7 @@ env.storage().instance().set(&DataKey::Admin, &admin_address);
 ### `E0002`: Missing Storage TTL Extension
 Soroban state requires TTL extensions. Writing state without subsequently extending its TTL is flagged as a high-severity risk.
 
-**❌ Vulnerable Code:**
+**Vulnerable Code:**
 ```rust
 env.storage().persistent().set(&DataKey::Balance, &amount);
 // Missing extend_ttl call
@@ -127,7 +127,7 @@ Flagging legacy Horizon endpoints when modern Soroban RPC endpoints should be us
 
 ---
 
-## 🏎️ 6. Performance & False Positive Mitigation
+## 6. Performance & False Positive Mitigation
 
 `stellarpath-cli` is designed for ultra-low latency execution, typically scanning complex workspaces in under 50 milliseconds. 
 
@@ -137,7 +137,7 @@ Flagging legacy Horizon endpoints when modern Soroban RPC endpoints should be us
 
 ---
 
-## 🔍 7. Deep Dive: AST Traversal Mechanics
+## 7. Deep Dive: AST Traversal Mechanics
 
 The structural advantage of AST verification over standard linting is context preservation. When `stellarpath-cli` evaluates a smart contract:
 1. It resolves macro expansions for `#[contractimpl]` to track precisely which functions are public entrypoints.
